@@ -1,8 +1,11 @@
 # Atlas – ruhiges Design mit Bildtafel für Anki
 
-Ein ruhiges, schnelles Design für Anki. Atlas gestaltet Lernansicht, Startseite und
-Leisten neu und setzt Bilder auf Karten in eine eigene **Bildtafel neben den Text**
-(Text links, Bild rechts) – ideal für Anatomie, Histologie und alles mit Abbildungen.
+Ein Design-Addon für Anki. Atlas lässt dich das Aussehen von Anki anpassen
+(Farben, Hintergrund, Schrift, Kartenform, Startseite) und zeigt vor allem
+**Bilder neben dem Kartentext** an statt darunter: Text links, Bild rechts in
+einer eigenen Bildtafel. Ideal für Anatomie, Histologie und alles mit Abbildungen.
+
+> Entwickelt mit Hilfe von KI (Claude).
 
 ## Funktionen
 
