@@ -1,0 +1,244 @@
+/* Atlas – Startseite (Stapelliste) und Stapelübersicht. Kommt ohne JavaScript aus. */
+:root,
+:root.night-mode {
+  --canvas: var(--at-bg);
+  --canvas-elevated: var(--at-surface);
+  --canvas-inset: var(--at-raised);
+  --fg: var(--at-ink);
+  --fg-subtle: var(--at-ink2);
+  --fg-faint: var(--at-ink3);
+  --fg-disabled: var(--at-ink3);
+  --fg-link: var(--at-accent);
+  --border: var(--at-line);
+  --border-subtle: var(--at-line);
+  --state-new: var(--at-new);
+  --state-learn: var(--at-learn);
+  --state-review: var(--at-review);
+  --button-primary-bg: var(--at-accent);
+}
+body {
+  margin: 0;
+  padding: 34px 24px 28px;
+  background: var(--at-bg);
+  color: var(--at-ink);
+  font-family: var(--at-font);
+  font-size: 14.5px;
+}
+body > center {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: start;
+}
+body > center > br {
+  display: none;
+}
+
+/* ---------- Kopf: was heute ansteht ---------- */
+#atlas-hero {
+  order: -1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin: 0 4px 26px;
+}
+#atlas-hero h1 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+}
+#atlas-hero p {
+  margin: 8px 0 0;
+  color: var(--at-ink2);
+  font-size: 14px;
+}
+#atlas-hero .at-counts {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--at-ink2);
+}
+#atlas-hero .at-counts b {
+  font-weight: 650;
+}
+.at-heat {
+  flex: none;
+  display: grid;
+  grid-template-rows: repeat(7, 10px);
+  grid-auto-flow: column;
+  grid-auto-columns: 10px;
+  gap: 3px;
+  contain: layout paint;
+}
+.at-heat i {
+  border-radius: 2.5px;
+  background: var(--at-line);
+}
+.at-heat .l1 {
+  background: var(--at-accent);
+  opacity: 0.3;
+}
+.at-heat .l2 {
+  background: var(--at-accent);
+  opacity: 0.55;
+}
+.at-heat .l3 {
+  background: var(--at-accent);
+  opacity: 0.8;
+}
+.at-heat .l4 {
+  background: var(--at-accent);
+}
+.at-heat .today {
+  outline: 1.5px solid var(--at-ink);
+  outline-offset: 1px;
+}
+
+/* ---------- Stapelliste ---------- */
+/* „body.fancy“ steht doppelt da, weil Ankis Standardmodus eigene Regeln
+   (.fancy table: Glasfläche + Schatten) mit höherer Spezifität mitbringt. */
+body > center > table,
+body.fancy > center > table,
+body.fancy > center > table:hover {
+  box-sizing: border-box;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--at-surface);
+  border: 1px solid var(--at-line);
+  border-radius: var(--at-radius);
+  box-shadow: none;
+  padding: 6px;
+}
+body > center > table th {
+  padding: 8px 12px 9px;
+  font-size: 12.5px;
+  font-weight: 550;
+  color: var(--at-ink3);
+}
+body tr.deck td,
+body.fancy tr.deck td {
+  padding: 9px 12px;
+  border: 0;
+}
+tr.top-level-drag-row td {
+  padding: 0;
+  height: 2px;
+  line-height: 0;
+  font-size: 0;
+}
+a.deck,
+a.deck:hover {
+  font-weight: 550;
+  text-decoration: none;
+}
+tr.deck a.collapse {
+  color: var(--at-ink3);
+  text-decoration: none;
+}
+.current td,
+tr:hover:not(.top-level-drag-row) td {
+  background: var(--at-raised);
+}
+tr.deck td span[class$="-count"] {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+tr.deck td .zero-count {
+  font-weight: 400;
+}
+.filtered {
+  color: var(--at-accent) !important;
+}
+#studiedToday {
+  margin: 18px 6px 0;
+  color: var(--at-ink3);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ---------- Stapelübersicht ---------- */
+body > center > h3 {
+  margin: 30px 0 14px;
+  font-size: 26px;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+body > center > h3:has(~ .at-crumb) {
+  margin-top: 6px;
+}
+.at-crumb {
+  order: -1;
+  margin-top: 30px;
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--at-ink3);
+}
+body > center > h3 ~ table,
+body.fancy > center > h3 ~ table,
+body.fancy > center > h3 ~ table:hover {
+  width: auto;
+  align-self: center;
+  padding: 18px 22px;
+}
+body > center > h3 ~ table table,
+body.fancy > center > h3 ~ table table,
+body.fancy > center > h3 ~ table table:hover {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.descfont {
+  color: var(--at-ink2);
+}
+body button,
+body.fancy button {
+  -webkit-appearance: none;
+  appearance: none;
+  font: 550 13.5px/1.2 var(--at-font);
+  padding: 9px 18px;
+  border: 1px solid var(--at-line);
+  border-radius: var(--at-radius-s, 8px);
+  background: var(--at-surface);
+  color: var(--at-ink);
+  box-shadow: none;
+  transition: none;
+  cursor: pointer;
+}
+body button:hover,
+body.fancy button:hover {
+  border: 1px solid var(--at-ink3);
+  background: var(--at-surface);
+  box-shadow: none;
+  transition: none;
+}
+body button#study,
+body button#study:hover {
+  background: var(--at-accent);
+  border-color: var(--at-accent);
+  color: var(--at-accent-ink);
+  padding: 11px 26px;
+}
+body button:focus-visible {
+  outline: 2px solid var(--at-accent) !important;
+  outline-offset: 2px;
+}
+
+@media (max-width: 620px) {
+  #atlas-hero {
+    display: block;
+  }
+  .at-heat {
+    margin-top: 18px;
+  }
+}

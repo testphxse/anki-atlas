@@ -1,0 +1,404 @@
+/* Atlas – Lernansicht.
+   Performance-Regeln: keine Filter, kein Blur, keine Schatten;
+   bewegt wird nur transform/opacity.
+
+   Die Schalter-Klassen (atlas, atlas-styled, …) hängen an <html>, nicht an
+   <body>: Anki überschreibt body.className bei jeder Karte.
+
+   Farben und Formen kommen als Variablen aus core.theme_style(). */
+
+/* ---------- Seitenrahmen ----------
+   Mit !important, weil das CSS des Notiztyps für .card (= body) Breite, Ränder
+   oder display setzen kann. Dann säße die Karte nicht mehr in der Mitte. */
+:root.atlas {
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+:root.atlas body {
+  display: block !important;
+  float: none !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 30px 28px 28px !important;
+}
+:root.atlas body #qa {
+  display: block !important;
+  float: none !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  max-width: var(--at-width, 760px) !important;
+  margin: 0 auto !important;
+}
+:root.atlas body #qa.atlas-has-split {
+  max-width: 1500px !important;
+}
+/* „text_position: mitte“ – Karte ohne Bild senkrecht in die Fenstermitte */
+:root.atlas.atlas-vcenter body {
+  display: flex !important;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+:root.atlas.atlas-vcenter body #qa {
+  width: 100% !important;
+  margin: auto !important;
+}
+
+/* ---------- Karteninhalt (abschaltbar: „karten_stylen“) ---------- */
+:root.atlas.atlas-styled body,
+:root.atlas.atlas-styled body.card {
+  background: var(--at-bg);
+  color: var(--at-ink);
+  line-height: 1.55;
+}
+:root.atlas.atlas-font body.card {
+  font-family: var(--at-font-card, var(--at-font));
+}
+:root.atlas.atlas-size body.card {
+  font-size: var(--at-size, 19px);
+}
+:root.atlas.atlas-styled body #qa:not(.atlas-has-split),
+:root.atlas.atlas-styled body .atlas-text {
+  background: var(--at-card-bg, var(--at-surface));
+  border: 1px solid var(--at-card-line, var(--at-line));
+  border-radius: var(--at-radius, 12px);
+  padding: var(--at-pad, 34px 40px);
+}
+:root.atlas.atlas-styled body hr {
+  height: 1px;
+  background: var(--at-line);
+  margin: 1.3em 0;
+}
+:root.atlas.atlas-styled body .cloze {
+  color: var(--at-accent);
+  font-weight: 650;
+}
+:root.atlas.atlas-styled body a {
+  color: var(--at-accent);
+}
+:root.atlas.atlas-styled body #typeans {
+  font: inherit;
+  padding: 8px 12px;
+  border: 1px solid var(--at-line);
+  border-radius: var(--at-radius-s, 8px);
+  background: var(--at-raised);
+  color: var(--at-ink);
+}
+:root.atlas.atlas-styled body #typeans:focus {
+  outline: 2px solid var(--at-accent);
+  outline-offset: 1px;
+}
+:root.atlas.atlas-align-auto .atlas-text,
+:root.atlas.atlas-align-left .atlas-text,
+:root.atlas.atlas-align-left body #qa {
+  text-align: start;
+}
+:root.atlas.atlas-align-center .atlas-text,
+:root.atlas.atlas-align-center body #qa {
+  text-align: center;
+}
+
+/* Markierung und Flagge: kleiner, ohne Kontur */
+:root.atlas #_mark,
+:root.atlas #_flag {
+  top: 6px;
+  font-size: 17px;
+  line-height: 1;
+  -webkit-text-stroke-width: 0;
+}
+:root.atlas #_mark {
+  color: #d9a400;
+}
+
+/* ---------- Atlas-Ansicht: Text links, Bildtafel rechts ----------
+   Spalten: Text | Trenner | Tafel. Ist --at-plate gesetzt (Breite passend zum
+   Bild), bleibt neben der Tafel Platz frei; justify-content stellt Karte und
+   Bild dann gemeinsam in die Fenstermitte. */
+.atlas-split {
+  display: grid;
+  grid-template-columns: minmax(260px, var(--at-left, 44%)) 14px minmax(0, var(--at-plate, 1fr));
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+}
+.atlas-split.atlas-flip {
+  direction: rtl;
+}
+.atlas-split.atlas-flip > * {
+  direction: ltr;
+}
+.atlas-text {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: calc(100vh - 58px);
+}
+.atlas-inner {
+  min-width: 0;
+}
+:root.atlas-vcenter .atlas-text {
+  display: flex;
+  align-items: center;
+}
+:root.atlas-vcenter .atlas-inner {
+  flex: 1 1 auto;
+  width: 100%;
+}
+.atlas-divider {
+  cursor: col-resize;
+  position: relative;
+  touch-action: none;
+}
+.atlas-divider::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--at-accent);
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.atlas-divider:hover::after,
+.atlas-dragging .atlas-divider::after {
+  opacity: 1;
+}
+.atlas-dragging,
+.atlas-dragging * {
+  user-select: none;
+  cursor: col-resize !important;
+}
+.atlas-plate {
+  position: sticky;
+  top: 30px;
+  align-self: start;
+  box-sizing: border-box;
+  width: auto;
+  height: calc(100vh - 58px);
+  min-width: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--at-plate-bg, var(--at-surface));
+  border: 1px solid var(--at-plate-line, var(--at-line));
+  border-radius: var(--at-radius, 12px);
+  contain: layout style;
+}
+.atlas-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  cursor: zoom-in;
+}
+.atlas-frame {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.atlas-frame.atlas-current {
+  display: flex;
+}
+/* Eine „Einheit“: Bild samt Abdeckungen und dem Rahmen, an dem sie hängen.
+   Atlas fasst darin nichts an – weder das Bild noch die Abdeckung – und gibt
+   nur die Breite vor (reviewer.js). Kein flex, damit sich display der Einheit
+   nicht ändert. */
+.atlas-frame.atlas-unit {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  flex: none;
+}
+.atlas-frame.atlas-unit.atlas-current {
+  display: block;
+}
+.atlas-stage.atlas-fixed {
+  cursor: default; /* keine Vergrößerung: sie würde das Bild ohne Abdeckung zeigen */
+}
+/* Nacktes Bild. #qa im Selektor, damit Vorgaben des Notiztyps (z. B. .img img{…}) nicht gewinnen */
+#qa .atlas-bare > img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+/* „bild_einpassen“: kleine Bilder wachsen bis zur Tafel, höchstens auf das Doppelte
+   (die Obergrenze setzt reviewer.js je Bild über max-width/max-height des Rahmens). */
+:root.atlas-fit #qa .atlas-bare > img {
+  width: 100%;
+  height: 100%;
+}
+/* „bild_abdunkeln“: nur im dunklen Modus, per Deckkraft statt Filter */
+:root.night-mode.atlas-dim #qa .atlas-bare > img {
+  opacity: 0.86;
+}
+.atlas-plate.atlas-empty .atlas-stage {
+  cursor: default;
+}
+.atlas-wait {
+  margin: 0;
+  max-width: 22em;
+  text-align: center;
+  font: 400 13.5px/1.5 var(--at-font);
+  color: var(--at-ink3);
+}
+.atlas-caption {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 30px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--at-plate-line, var(--at-line));
+  font: 500 12.5px/1.3 var(--at-font);
+  color: var(--at-ink2);
+  font-variant-numeric: tabular-nums;
+}
+.atlas-caption[hidden] {
+  display: none;
+}
+.atlas-thumbs {
+  display: flex;
+  gap: 6px;
+  margin-inline-start: auto;
+  overflow-x: auto;
+}
+.atlas-thumbs button {
+  all: unset;
+  box-sizing: border-box;
+  width: 40px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid var(--at-line);
+  background: var(--at-raised) center / cover no-repeat;
+  cursor: pointer;
+  flex: none;
+}
+.atlas-thumbs button:not([style]) {
+  font: 600 11px/28px var(--at-font);
+  color: var(--at-ink2);
+  text-align: center;
+}
+.atlas-thumbs button[aria-current="true"] {
+  border: 2px solid var(--at-accent);
+}
+.atlas-thumbs button:focus-visible {
+  outline: 2px solid var(--at-accent);
+  outline-offset: 1px;
+}
+.atlas-gone {
+  display: none !important;
+}
+
+/* Schmales Fenster: untereinander statt nebeneinander */
+@media (max-width: 760px) {
+  .atlas-split {
+    display: block;
+  }
+  .atlas-divider {
+    display: none;
+  }
+  .atlas-text {
+    min-height: 0;
+  }
+  .atlas-plate {
+    position: static;
+    height: 60vh;
+    margin-top: 14px;
+  }
+}
+
+/* ---------- Fortschritt und Schalter ---------- */
+#atlas-bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 50;
+  contain: strict;
+}
+#atlas-bar > i {
+  display: block;
+  height: 100%;
+  background: var(--at-accent);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  transition: transform 0.16s ease-out;
+}
+#atlas-hud {
+  position: fixed;
+  top: 5px;
+  right: 40px;
+  z-index: 51;
+  font: 500 12px/1 var(--at-font);
+  user-select: none;
+}
+#atlas-toggle {
+  all: unset;
+  cursor: pointer;
+  padding: 5px 9px;
+  border-radius: 7px;
+  color: var(--at-ink2);
+  font: inherit;
+}
+#atlas-toggle:hover {
+  background: var(--at-line);
+  color: var(--at-ink);
+}
+#atlas-toggle:focus-visible {
+  outline: 2px solid var(--at-accent);
+}
+#atlas-toggle[hidden] {
+  display: none;
+}
+
+/* ---------- Vergrößerung ---------- */
+#atlas-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(10, 12, 16, 0.94);
+  cursor: zoom-out;
+  touch-action: none;
+}
+#atlas-zoom.atlas-open {
+  display: flex;
+}
+#atlas-zoom.atlas-pan {
+  cursor: grab;
+}
+#atlas-zoom img {
+  max-width: 96vw;
+  max-height: 96vh;
+  object-fit: contain;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #atlas-bar > i,
+  .atlas-divider::after {
+    transition: none;
+  }
+}

@@ -1,0 +1,38 @@
+/* Atlas – gemeinsame Farb- und Maßwerte für alle Anki-Ansichten.
+   Die Akzentfarbe (--at-accent, --at-accent-ink, --at-accent-soft) setzt
+   __init__.py je nach Thema direkt im <head>. */
+:root {
+  --at-bg: #f2f4f7;
+  --at-surface: #ffffff;
+  --at-raised: #f8f9fb;
+  --at-ink: #171c26;
+  --at-ink2: #566074;
+  --at-ink3: #8791a3;
+  --at-line: #dce1ea;
+  --at-again: #c2413c;
+  --at-hard: #a86a12;
+  --at-good: #23804f;
+  --at-easy: #2b66cf;
+  --at-new: #2b66cf;
+  --at-learn: #c2413c;
+  --at-review: #23804f;
+  --at-radius: 12px;
+  --at-font: "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+}
+:root.night-mode {
+  --at-bg: #12151b;
+  --at-surface: #1a1f28;
+  --at-raised: #202632;
+  --at-ink: #e7eaf0;
+  --at-ink2: #a2abbb;
+  --at-ink3: #6f7a8c;
+  --at-line: #2c3442;
+  --at-again: #ef7d77;
+  --at-hard: #e0aa54;
+  --at-good: #6cc795;
+  --at-easy: #7fa9f2;
+  --at-new: #7fa9f2;
+  --at-learn: #ef7d77;
+  --at-review: #6cc795;
+}

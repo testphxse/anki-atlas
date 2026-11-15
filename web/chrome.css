@@ -1,0 +1,134 @@
+/* Atlas – obere Leiste und untere Leisten.
+   Ankis eigene Stylesheets arbeiten mit Variablen; die meisten Änderungen
+   entstehen dadurch, dass diese Variablen auf die Atlas-Werte zeigen. */
+:root,
+:root.night-mode {
+  --canvas: var(--at-bg);
+  --canvas-elevated: var(--at-surface);
+  --canvas-inset: var(--at-raised);
+  --canvas-glass: var(--at-bg);
+  --fg: var(--at-ink);
+  --fg-subtle: var(--at-ink2);
+  --fg-faint: var(--at-ink3);
+  --fg-disabled: var(--at-ink3);
+  --fg-link: var(--at-accent);
+  --border: var(--at-line);
+  --border-subtle: var(--at-line);
+  --border-focus: var(--at-accent);
+  --state-new: var(--at-new);
+  --state-learn: var(--at-learn);
+  --state-review: var(--at-review);
+  --button-primary-bg: var(--at-accent);
+}
+body {
+  background: var(--at-bg);
+  color: var(--at-ink);
+  font-family: var(--at-font);
+}
+
+/* ---------- Obere Leiste ---------- */
+body .header {
+  border-bottom: 1px solid var(--at-line);
+}
+/* Ankis „fancy“-Leiste nutzt backdrop-filter und drei Schatten – beides aus. */
+body.fancy .toolbar,
+body.fancy:not(.flat) .toolbar,
+body.fancy:not(.flat) .toolbar:hover {
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  border-radius: 0;
+}
+body .hitem,
+body.fancy .hitem,
+body.fancy:not(.flat) .hitem {
+  font-weight: 550;
+  font-size: 13.5px;
+  padding: 7px 13px;
+  margin: 4px 1px;
+  border: 0;
+  border-radius: var(--at-radius-s, 8px);
+  background: transparent;
+  color: var(--at-ink2);
+  text-decoration: none;
+}
+body .hitem:hover,
+body.fancy .hitem:hover {
+  border: 0;
+  text-decoration: none;
+  background: var(--at-line);
+  color: var(--at-ink);
+}
+body .hitem:focus-visible {
+  outline: 2px solid var(--at-accent);
+  outline-offset: -2px;
+}
+
+/* ---------- Untere Leisten ---------- */
+#outer,
+.nightMode #outer {
+  border-top: 1px solid var(--at-line);
+}
+body button,
+body.fancy button {
+  -webkit-appearance: none;
+  appearance: none;
+  font: 550 13.5px/1.2 var(--at-font);
+  padding: 8px 16px;
+  border: 1px solid var(--at-line);
+  border-radius: var(--at-radius-s, 8px);
+  background: var(--at-surface);
+  color: var(--at-ink);
+  box-shadow: none;
+  transition: none;
+  cursor: pointer;
+}
+body button:hover,
+body.fancy button:hover {
+  border: 1px solid var(--at-ink3);
+  background: var(--at-surface);
+  box-shadow: none;
+  transition: none;
+}
+body button:active,
+body.fancy button:active {
+  background: var(--at-raised);
+  box-shadow: none;
+}
+body button:focus-visible {
+  outline: 2px solid var(--at-accent) !important;
+  outline-offset: 2px;
+}
+body button#ansbut,
+body button#ansbut:hover {
+  min-width: 190px;
+  background: var(--at-accent);
+  border-color: var(--at-accent);
+  color: var(--at-accent-ink);
+}
+body button[data-ease],
+body button[data-ease]:hover {
+  min-width: 88px;
+  border-bottom-width: 3px;
+}
+body button[data-ease="1"],
+body button[data-ease="1"]:hover {
+  border-bottom-color: var(--at-again);
+}
+body button[data-ease="2"],
+body button[data-ease="2"]:hover {
+  border-bottom-color: var(--at-hard);
+}
+body button[data-ease="3"],
+body button[data-ease="3"]:hover {
+  border-bottom-color: var(--at-good);
+}
+body button[data-ease="4"],
+body button[data-ease="4"]:hover {
+  border-bottom-color: var(--at-easy);
+}
+.nobold,
+.stattxt {
+  color: var(--at-ink2);
+  font-variant-numeric: tabular-nums;
+}
